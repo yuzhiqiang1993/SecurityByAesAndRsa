@@ -10,6 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+ /**
+ * @Description: RSA2加签和验签
+ * @author : yzq
+ * @date   : 2019/3/16
+ * @time   : 10:28
+ *
+ */
+
 public class RSA2Utils {
 
     public static final String KEY_ALGORITHM = "RSA";
