@@ -32,6 +32,8 @@ public class RSAUtils {
     // public static final String SIGNATURE_ALGORITHM = "MD5withRSA";
     private static final String SIGNATURE_ALGORITHM = "SHA256withRSA";
 
+    private static final String cipherMode = "RSA/ECB/PKCS1Padding";
+
     /**
      * 获取公钥的key
      */
@@ -180,7 +182,7 @@ public class RSAUtils {
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
         Key privateK = keyFactory.generatePrivate(pkcs8KeySpec);
         //Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
-        Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
+        Cipher cipher = Cipher.getInstance(cipherMode);
         cipher.init(Cipher.DECRYPT_MODE, privateK);
 
         int inputLen = encryptedData.length;
@@ -219,7 +221,7 @@ public class RSAUtils {
         X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
         Key publicK = keyFactory.generatePublic(x509KeySpec);
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        Cipher cipher = Cipher.getInstance(cipherMode);
         cipher.init(Cipher.DECRYPT_MODE, publicK);
         int inputLen = encryptedData.length;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -257,7 +259,7 @@ public class RSAUtils {
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
         Key publicK = keyFactory.generatePublic(x509KeySpec);
         // 对数据加密
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        Cipher cipher = Cipher.getInstance(cipherMode);
         cipher.init(Cipher.ENCRYPT_MODE, publicK);
         int inputLen = data.length;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -294,7 +296,7 @@ public class RSAUtils {
         PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
         Key privateK = keyFactory.generatePrivate(pkcs8KeySpec);
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        Cipher cipher = Cipher.getInstance(cipherMode);
         cipher.init(Cipher.ENCRYPT_MODE, privateK);
         int inputLen = data.length;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
