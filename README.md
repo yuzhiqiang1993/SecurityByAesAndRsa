@@ -1,2 +1,3 @@
 # SecurityByAesAndRsa
 AES和RSA加密结合示例
+其中，AES兼容所有Android版本，RSA支持长度为2048的秘钥
