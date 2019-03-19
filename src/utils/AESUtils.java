@@ -1,6 +1,8 @@
 package utils;
 
 
+import com.sun.istack.internal.NotNull;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Random;
@@ -15,14 +17,18 @@ import java.util.Random;
 
 public class AESUtils {
 
-    private static String cipherMode = "AES/ECB/PKCS5Padding";//"算法/模式/补码方式"
+    private static String cipherMode = "AES/ECB/PKCS5Padding";//算法/模式/补码方式
+
+    /*   AES秘钥支持128bit/192bit/256bit三种长度的秘钥，一个字节等于8bit，
+     *   因此支持生成的字符串的长度应该是 16/24/32
+     * */
+    private static int keyLength = 24;
 
 
     public static void main(String[] args) {
 
-        /*构建一个随机的16位密码*/
-
-        String key = getRandomKey(16);
+        /*构建一个随机密码*/
+        String key = getRandomKey(keyLength);
         System.out.println("随机生成的key：" + key);
 
         String data = "{'fig':1,'message':'登录成功'}";
@@ -48,6 +54,11 @@ public class AESUtils {
      */
     public static String getRandomKey(int length) {
 
+        if (length != 16 && length != 24 && length != 32) {
+            System.out.println("长度必须为16/24/32");
+            return null;
+        }
+
         String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new Random();
         StringBuilder stringBuilder = new StringBuilder();
@@ -66,18 +77,14 @@ public class AESUtils {
      * @return 加密后的数据(Base64编码)
      * @throws Exception
      */
-    public static String encrypt(String data, String key) throws Exception {
+    public static String encrypt(String data, @NotNull String key) throws Exception {
 
-
-        if (key == null) {
-            System.out.print("Key为空null");
+        int length = key.length();
+        if (length != 16 && length != 24 && length != 32) {
+            System.out.println("长度必须为16/24/32");
             return null;
         }
-        // 判断Key是否为16位
-        if (key.length() != 16) {
-            System.out.print("Key长度不是16位");
-            return null;
-        }
+
         byte[] raw = key.getBytes("utf-8");
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance(cipherMode);
@@ -94,18 +101,14 @@ public class AESUtils {
      * @return 解密后的数据
      * @throws Exception
      */
-    public static String decrypt(String data, String key) throws Exception {
+    public static String decrypt(String data, @NotNull String key) throws Exception {
         try {
-            // 判断Key是否正确
-            if (key == null) {
-                System.out.print("Key为空null");
+            int length = key.length();
+            if (length != 16 && length != 24 && length != 32) {
+                System.out.println("长度必须为16/24/32");
                 return null;
             }
-            // 判断Key是否为16位
-            if (key.length() != 16) {
-                System.out.print("Key长度不是16位");
-                return null;
-            }
+
             byte[] raw = key.getBytes("utf-8");
             SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
             Cipher cipher = Cipher.getInstance(cipherMode);
