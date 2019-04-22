@@ -4,6 +4,7 @@ package utils;
 import com.sun.istack.internal.NotNull;
 
 import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Random;
 
@@ -17,13 +18,15 @@ import java.util.Random;
 
 public class AESUtils {
 
-    private static String cipherMode = "AES/ECB/PKCS5Padding";//算法/模式/补码方式
+    private static String cipherMode = "AES/CBC/PKCS5Padding";//算法/模式/补码方式
 
     /*   AES秘钥支持128bit/192bit/256bit三种长度的秘钥，一个字节等于8bit，
      *   因此支持生成的字符串的长度应该是 16/24/32
      * */
-    private static int keyLength = 24;
+    private static int keyLength = 16;
 
+    /*偏移量 当加密模式为CBC时  需要偏移量*/
+    private static String offset = "1234567890000000";
 
     public static void main(String[] args) {
 
@@ -88,7 +91,8 @@ public class AESUtils {
         byte[] raw = key.getBytes("utf-8");
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance(cipherMode);
-        cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+        IvParameterSpec iv = new IvParameterSpec(offset.getBytes());
+        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
         byte[] encrypted = cipher.doFinal(data.getBytes("utf-8"));
 
         return Base64.encode(encrypted);
@@ -112,7 +116,8 @@ public class AESUtils {
             byte[] raw = key.getBytes("utf-8");
             SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
             Cipher cipher = Cipher.getInstance(cipherMode);
-            cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+            IvParameterSpec iv = new IvParameterSpec(offset.getBytes());//使用CBC模式，需要一个向量iv，可增加加密算法的强度
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
             byte[] encrypted = Base64.decode(data);//先用base64解密
             try {
                 byte[] original = cipher.doFinal(encrypted);
