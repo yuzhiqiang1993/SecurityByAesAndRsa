@@ -37,7 +37,7 @@ public class AESUtils {
         String data = "{'fig':1,'message':'登录成功'}";
 
         try {
-            String encriptData = AESUtils.encrypt(data, key);
+            String encriptData = encrypt(data, key);
             System.out.println("加密后的数据：" + encriptData);
 
             String decryptData = decrypt(encriptData, key);
