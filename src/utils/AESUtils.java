@@ -20,18 +20,16 @@ public class AESUtils {
 
     private static String cipherMode = "AES/CBC/PKCS5Padding";//算法/模式/补码方式
 
-    /*   AES秘钥支持128bit/192bit/256bit三种长度的秘钥，一个字节等于8bit，
-     *   因此支持生成的字符串的长度应该是 16/24/32
-     * */
-    private static int keyLength = 16;
-
     /*偏移量 当加密模式为CBC时  需要偏移量*/
     private static String offset = "1234567890000000";
 
     public static void main(String[] args) {
 
         /*构建一个随机密码*/
-        String key = getRandomKey(keyLength);
+        /*   AES秘钥支持128bit/192bit/256bit三种长度的秘钥，一个字节等于8bit，
+         *   因此支持生成的字符串的长度应该是 16/24/32
+         * */
+        String key = getRandomKey(16);
         System.out.println("随机生成的key：" + key);
 
         String data = "{'fig':1,'message':'登录成功'}";
@@ -59,7 +57,7 @@ public class AESUtils {
 
         if (length != 16 && length != 24 && length != 32) {
             System.out.println("长度必须为16/24/32");
-            return null;
+            length = 16;
         }
 
         String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -80,7 +78,7 @@ public class AESUtils {
      * @return 加密后的数据(Base64编码)
      * @throws Exception
      */
-    public static String encrypt(String data, @NotNull String key) throws Exception {
+    public static String encrypt(String data, String key) throws Exception {
 
         int length = key.length();
         if (length != 16 && length != 24 && length != 32) {
